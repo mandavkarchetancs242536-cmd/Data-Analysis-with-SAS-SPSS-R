@@ -1,0 +1,40 @@
+install.packages("dplyr")
+
+
+library(dplyr)
+
+
+delivery <- read_csv("Food_Delivery_Route_Efficiency_Dataset.csv")
+
+
+delivery_sorted_time <- delivery |>
+  arrange(delivery_time_min)
+
+head(delivery_sorted_time, 5)
+
+
+delivery_sorted_distance_desc <- delivery |>
+  arrange(desc(distance_km))
+
+head(delivery_sorted_distance_desc, 5)
+
+
+
+delivery_multi_sort <- delivery |>
+  arrange(traffic_level, desc(delivery_time_min))
+
+head(delivery_multi_sort, 10)
+
+
+
+car_delivery_sorted <- delivery |>
+  filter(delivery_mode == "Car") |>      
+  arrange(route_length_km)               
+
+
+print(
+  car_delivery_sorted |>
+    dplyr::select(delivery_mode, route_length_km, delivery_time_min) |>
+    head(5)
+)
+

@@ -1,0 +1,27 @@
+install.packages(c("readr", "psych"))
+
+library(readr)
+library(psych)
+
+my_data <- read_csv("world_suicide_rates.csv")
+
+
+head(my_data)
+
+
+tail(my_data)
+
+
+cat("Dimensions (Rows, Columns):", dim(my_data), "\n")
+
+
+str(my_data)
+
+
+summary(my_data)
+
+
+cat("Column Names:", names(my_data), "\n")
+
+
+psych::describe(my_data)

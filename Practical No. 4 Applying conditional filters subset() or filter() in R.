@@ -1,0 +1,62 @@
+install.packages("dplyr")
+install.packages("readr")
+
+
+library(dplyr)
+library(readr)
+
+
+energy <- read_csv("energy_consumption.csv")
+
+
+head(energy)
+
+
+high_cost <- subset(energy, energy_cost_brl > 100)
+
+cat("Number of high-cost customers (energy_cost_brl > 100):", 
+    nrow(high_cost), "\n")
+
+summary(high_cost$energy_cost_brl)
+
+
+
+high_cost_low_occ <- subset(energy, energy_cost_brl > 100 & occupants < 2)
+
+cat("High cost + low occupants customers:", 
+    nrow(high_cost_low_occ), "\n")
+
+head(high_cost_low_occ)
+
+
+
+special_buildings <- subset(energy, building_size_m2 > 40 | occupants > 4)
+
+cat("Number of special buildings:", nrow(special_buildings), "\n")
+head(special_buildings)
+
+
+
+low_occupants_filter <- energy |>
+  filter(occupants < 2)
+
+cat("Number of low-occupant customers:", 
+    nrow(low_occupants_filter), "\n")
+
+summary(low_occupants_filter$occupants)
+
+
+high_cost_not_se <- energy |>
+  filter(regions != "Southeast", energy_cost_brl > 120)
+
+cat("High cost & not in Southeast:", nrow(high_cost_not_se), "\n")
+head(high_cost_not_se)
+
+
+
+region_filter <- energy |>
+  filter(regions %in% c("Northeast", "Midwest"))
+
+cat("Customers from Northeast or Midwest:", nrow(region_filter), "\n")
+table(region_filter$regions)
+

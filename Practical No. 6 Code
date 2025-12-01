@@ -1,0 +1,35 @@
+library(dplyr)  
+
+data <- read.csv("product_sales_dataset_final.csv")
+
+print("--- Original Dataset ---")
+print(head(data))
+
+
+data1 <- data[1:100, ]
+data2 <- data[101:200, ]
+
+print("--- Dataset 1 (First 100 Rows) ---")
+print(head(data1))
+
+print("--- Dataset 2 (Next 100 Rows) ---")
+print(head(data2))
+
+
+merged_data <- merge(
+  data1,
+  data2,
+  by = "City",
+  suffixes = c("_Part1", "_Part2")
+)
+
+print("--- Merged Data (Dataset1 + Dataset2 Columns Added) ---")
+print(head(merged_data))
+
+data1$Part <- "First 100 Rows"
+data2$Part <- "Next 100 Rows"
+
+combined_data <- bind_rows(data1, data2)
+
+print("--- Combined Data (Rows Added) ---")
+print(head(combined_data))

@@ -1,0 +1,46 @@
+install.packages("tidyr")
+library(dplyr)
+library(tidyr)    
+
+
+
+sleep_df <- read.csv("dataset_2191_sleep.csv", na.strings = c("", "NA"))
+
+print("--- 1. Original Data (First 6 Rows) ---")
+print(head(sleep_df))
+
+
+print("--- Count of Missing Values per Column ---")
+print(colSums(is.na(sleep_df)))
+
+
+
+clean_omit <- na.omit(sleep_df)
+
+print("--- 2. Data after na.omit() ---")
+print(paste("Original rows:", nrow(sleep_df)))
+print(paste("Rows remaining:", nrow(clean_omit)))
+print(head(clean_omit))
+
+
+
+
+
+clean_replace <- sleep_df %>% 
+  replace_na(list(
+    body_weight = mean(sleep_df$body_weight, na.rm = TRUE),
+    brain_weight = mean(sleep_df$brain_weight, na.rm = TRUE),
+    max_life_span = mean(sleep_df$max_life_span, na.rm = TRUE),
+    gestation_time = mean(sleep_df$gestation_time, na.rm = TRUE),
+    predation_index = mean(sleep_df$predation_index, na.rm = TRUE),
+    sleep_exposure_index = mean(sleep_df$sleep_exposure_index, na.rm = TRUE),
+    danger_index = mean(sleep_df$danger_index, na.rm = TRUE),
+    total_sleep = mean(sleep_df$total_sleep, na.rm = TRUE)
+  ))
+
+print("--- 3. Data after replace_na() ---")
+print(head(clean_replace))
+
+
+print("--- Remaining NAs after replacement ---")
+print(colSums(is.na(clean_replace)))

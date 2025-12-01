@@ -1,0 +1,47 @@
+install.packages("stringr")
+install.packages("tidyr")
+
+library(stringr)
+library(tidyr)
+library(dplyr)
+
+
+transport_df <- read_csv("Synthetic_Transportation_Dataset_Expanded_v2.csv")
+
+print("--- Original Dataset (First 6 Rows) ---")
+print(head(transport_df))
+
+
+
+transport_df$Day   <- str_sub(transport_df$Timestamp, 1, 2)
+transport_df$Month <- str_sub(transport_df$Timestamp, 4, 5)
+transport_df$Year  <- str_sub(transport_df$Timestamp, 7, 10)
+transport_df$Hour  <- str_sub(transport_df$Timestamp, 12, 13)
+
+print("--- After str_sub() Extraction (Corrected) ---")
+print(transport_df %>% select(Timestamp, Day, Month, Year, Hour) %>% head())
+
+
+split_matrix <- str_split(transport_df$Weather, " ", simplify = TRUE)
+
+
+transport_df$Weather_Main <- split_matrix[, 1]
+
+
+if (ncol(split_matrix) >= 2) {
+  transport_df$Weather_Detail <- split_matrix[, 2]
+} else {
+  transport_df$Weather_Detail <- NA
+}
+
+print("--- After Safe Weather Split ---")
+print(transport_df %>% select(Weather, Weather_Main, Weather_Detail) %>% head())
+
+
+
+tidy_transport <- transport_df %>% 
+  separate(Timestamp, into = c("Date", "Time"), sep = " ")
+
+print("--- Using separate() to split Timestamp into Date & Time ---")
+print(tidy_transport %>% select(Date, Time) %>% head())
+

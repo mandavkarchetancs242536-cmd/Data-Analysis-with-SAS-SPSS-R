@@ -1,0 +1,55 @@
+library(dplyr)
+library(readr)
+
+attendance <- read_csv("Attendance_Prediction.csv")
+
+print("--- Original Dataset (First 3 rows) ---")
+print(head(attendance, 3))
+
+
+
+selected_cols <- attendance %>%
+  select(student_id, age, attendance, study_hours)
+
+print("--- Selected Specific Columns ---")
+print(head(selected_cols, 3))
+
+
+
+range_cols <- attendance %>%
+  select(age:study_hours)
+
+print("--- Selected Range of Columns (age to study_hours) ---")
+print(head(range_cols, 3))
+
+
+
+starts_with_s <- attendance %>%
+  select(starts_with("s"))
+
+print("--- Selected Columns Starting with 'S' ---")
+print(head(starts_with_s, 3))
+
+
+dropped_one <- attendance %>%
+  select(-gender)
+
+print("--- Dataset with 'gender' Dropped ---")
+print(names(dropped_one))
+
+
+
+dropped_multiple <- attendance %>%
+  select(-attendance, -study_hours)
+
+print("--- Dataset with Multiple Columns Dropped ---")
+print(names(dropped_multiple))
+
+
+
+dropped_range <- attendance %>%
+  select(-(age:study_hours))
+
+print("--- Dataset with Range (age to study_hours) Dropped ---")
+print(names(dropped_range))
+

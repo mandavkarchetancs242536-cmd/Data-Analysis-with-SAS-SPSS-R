@@ -1,0 +1,112 @@
+library(dplyr)
+library(tidyr)
+
+df <- read.csv("Student Stress Factors (2).csv",
+               na.strings = c("", "NA"),
+               check.names = FALSE)
+
+
+names(df) <- make.names(names(df))
+print(names(df))
+
+df_clean <- df %>%
+  mutate(
+    Kindly.Rate.your.Sleep.Quality... =
+      replace_na(Kindly.Rate.your.Sleep.Quality..., 0),
+    
+    How.many.times.a.week.do.you.suffer.headaches.... =
+      replace_na(How.many.times.a.week.do.you.suffer.headaches...., 0),
+    
+    How.would.you.rate.you.academic.performance....... =
+      replace_na(How.would.you.rate.you.academic.performance......., 0),
+    
+    how.would.you.rate.your.study.load. =
+      replace_na(how.would.you.rate.your.study.load., 0),
+    
+    How.many.times.a.week.you.practice.extracurricular.activities.... =
+      replace_na(How.many.times.a.week.you.practice.extracurricular.activities...., 0),
+    
+    How.would.you.rate.your.stress.levels. =
+      replace_na(How.would.you.rate.your.stress.levels., 0)
+  )
+
+print("--- Cleaned Dataset (First Rows) ---")
+print(head(df_clean))
+
+
+
+df_calc <- df_clean %>%
+  mutate(
+    Sleep_Health_Score =
+      Kindly.Rate.your.Sleep.Quality... -
+      How.would.you.rate.your.stress.levels.
+  )
+
+print("--- Method A: Sleep Health Score ---")
+print(
+  df_calc %>%
+    select(
+      Kindly.Rate.your.Sleep.Quality...,
+      How.would.you.rate.your.stress.levels.,
+      Sleep_Health_Score
+    ) %>% head()
+)
+
+
+
+
+df_logic <- df_clean %>%
+  mutate(
+    Stress_Category = ifelse(
+      How.would.you.rate.your.stress.levels. > 7,
+      "High Stress", "Normal"
+    ),
+    StudyLoad_Category = ifelse(
+      how.would.you.rate.your.study.load. > 6,
+      "Heavy Study Load", "Light Study Load"
+    )
+  )
+
+print("--- Method B: Conditional Labels ---")
+print(
+  df_logic %>%
+    select(
+      How.would.you.rate.your.stress.levels.,
+      Stress_Category,
+      how.would.you.rate.your.study.load.,
+      StudyLoad_Category
+    ) %>% head()
+)
+
+
+
+
+df_text <- df_clean %>%
+  mutate(
+    Student_Summary = paste(
+      "Sleep Quality:", Kindly.Rate.your.Sleep.Quality...,
+      "| Stress:", How.would.you.rate.your.stress.levels.,
+      "| Headaches/week:", How.many.times.a.week.do.you.suffer.headaches....
+    )
+  )
+
+print("--- Method C: Text Transformation ---")
+print(head(df_text$Student_Summary))
+
+
+
+
+final_dataset <- df_clean %>%
+  mutate(
+    Sleep_Health_Score =
+      Kindly.Rate.your.Sleep.Quality... -
+      How.would.you.rate.your.stress.levels.,
+    Good_Sleeper = ifelse(Sleep_Health_Score >= 2, TRUE, FALSE),
+    Summary = paste0(
+      "Performance=", How.would.you.rate.you.academic.performance.......,
+      " | Study Load=", how.would.you.rate.your.study.load.
+    )
+  )
+
+print("--- Final Dataset Output ---")
+print(head(final_dataset))
